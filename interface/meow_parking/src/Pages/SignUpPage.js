@@ -13,6 +13,7 @@ export default function SignIn() {
         password: ""
     })
     //обработчик форм
+    
     const handleForm = () => {
         console.log(formInput)
         setFormInput({
@@ -20,8 +21,14 @@ export default function SignIn() {
             email: "",
             password: ""
         })
+        alert('A form was submitted: '+ formInput.email +" " +formInput.password+" " +formInput.name);
+        fetch('http://localhost:3000/store-data', {
+        method: 'POST',
+            // We convert the React state to JSON and send it as the POST body
+        body: JSON.stringify({name:formInput.name,email: formInput.email, password:formInput.password})
+        }).then(response => response.json())
+        .then(data => setFormInput({ name:data.name, email: data.email, password:data.password}));
     }
-
   return (
     //описание фона
     <div className=" bg-green-200 relative flex flex-col justify-center min-h-screen overflow-hidden">
