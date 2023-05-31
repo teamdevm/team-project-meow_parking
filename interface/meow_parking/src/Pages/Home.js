@@ -20,7 +20,14 @@ const handleForm = () => {
   return (
     <div className=" bg-green-200 relative font-montesserat flex flex-col min-h-screen overflow-hidden">
       <div>
-        <Header />
+        <div class="relative">
+          <p><Header /></p>
+          <button 
+                      onClick={()=>{handleForm()}}
+                      type="submit" class="gap-4 text-black  rounded-br-2xl absolute right-0.5 bottom-0.5 bg-transparent hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Личный кабинет</button>
+                
+        </div>
+        
         <div className="w-full p-6 m-auto bg-transparent rounded-md ring ring-4 ring-transparent lg:max-w-7xl">
         <form>   
                 <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-gray-300">Search</label>
@@ -34,11 +41,21 @@ const handleForm = () => {
                       type="search" id="default-search" class="block p-4 pl-10 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Поиск парковок" required/>
                     <button 
                       onClick={()=>{handleForm()}}
-                      type="submit" class="text-black absolute right-2.5 bottom-2.5 bg-gray-400 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Поиск</button>
+                      type="submit" class="text-black absolute right-2.5 bottom-2.5 bg-gray-400 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 hover:text-white dark:focus:ring-blue-800">Поиск</button>
                 </div>
             </form>
         </div>
-              
+        <div className="w-full p-6 m-auto bg-transparent rounded-md ring ring-2 ring-transparent lg:max-w-4xl">
+        <button type="button" class="border-black font-montesserat text-black w-full py-3 px-4 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-indigo-400 hover:bg-indigo-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm sm:p-12 dark:focus:ring-offset-gray-800">
+          Список автостоянок
+        </button>
+        </div>
+        <div className="w-full p-6 m-auto bg-transparent rounded-md ring ring-2 ring-transparent lg:max-w-4xl">
+        <button type="button" class="border-black text-black font-montesserat w-full py-3 px-4 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-green-400 hover:bg-green-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm sm:p-12 dark:focus:ring-offset-gray-800">
+          Избранные автостоянки
+        </button>
+        </div>
+
       </div>
     </div>
   )
