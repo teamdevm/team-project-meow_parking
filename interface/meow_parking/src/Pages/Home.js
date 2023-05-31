@@ -46,12 +46,16 @@ const handleForm = () => {
             </form>
         </div>
         <div className="w-full p-6 m-auto bg-transparent rounded-md ring ring-2 ring-transparent lg:max-w-4xl">
-        <button type="button" class="border-black font-montesserat text-black w-full py-3 px-4 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-indigo-400 hover:bg-indigo-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm sm:p-12 dark:focus:ring-offset-gray-800">
+        <button 
+          onClick={()=>{handleForm()}}
+          type="button" class="border-black font-montesserat text-black w-full py-3 px-4 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-indigo-400 hover:bg-indigo-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm sm:p-12 dark:focus:ring-offset-gray-800">
           Список автостоянок
         </button>
         </div>
         <div className="w-full p-6 m-auto bg-transparent rounded-md ring ring-2 ring-transparent lg:max-w-4xl">
-        <button type="button" class="border-black text-black font-montesserat w-full py-3 px-4 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-green-400 hover:bg-green-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm sm:p-12 dark:focus:ring-offset-gray-800">
+        <button 
+          onClick={()=>{handleForm()}}
+          type="button" class="border-black text-black font-montesserat w-full py-3 px-4 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-green-400 hover:bg-green-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm sm:p-12 dark:focus:ring-offset-gray-800">
           Избранные автостоянки
         </button>
         </div>
