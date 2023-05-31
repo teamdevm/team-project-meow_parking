@@ -16,6 +16,13 @@ const handleForm = () => {
     setFormInput({
         search: ""
     })
+    alert('A form was submitted: '+ formInput.search);
+    fetch('http://localhost:3000/store-data', {
+    method: 'POST',
+        // We convert the React state to JSON and send it as the POST body
+    body: JSON.stringify({search: formInput.search})
+    }).then(response => response.json())
+    .then(data => setFormInput({ search: data.search}));
 }
   return (
     <div className=" bg-green-200 relative font-montesserat flex flex-col min-h-screen overflow-hidden">
