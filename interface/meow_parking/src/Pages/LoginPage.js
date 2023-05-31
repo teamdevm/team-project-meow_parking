@@ -1,6 +1,7 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import { useNavigate } from 'react-router-dom'
 import Header from "../Components/Header";
+import { useState } from 'react'
 
 
 export default function Login() {
@@ -18,6 +19,13 @@ export default function Login() {
             email: "",
             password: "",
         })
+        alert('A form was submitted: '+ formInput.email +" " +formInput.password);
+        fetch('http://localhost:3000/store-data', {
+        method: 'POST',
+            // We convert the React state to JSON and send it as the POST body
+        body: JSON.stringify({email: formInput.email, password:formInput.password})
+        }).then(response => response.json())
+        .then(data => setFormInput({ email: data.email, password:data.password}));
     }
 
   return (
