@@ -39,6 +39,6 @@ class Users(Base):
     role = (Integer)
     password = Column(VARCHAR)
 
-
-
-
+# создаем сессию подключения к бд
+with sessionUsers(autoflush=False, bind=engineUsers) as db:
+    ###CRUD аналогично круду в parkingsDB.py
