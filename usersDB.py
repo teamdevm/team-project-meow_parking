@@ -41,4 +41,5 @@ class Users(Base):
 
 # создаем сессию подключения к бд
 with sessionUsers(autoflush=False, bind=engineUsers) as db:
+    pass
     ###CRUD аналогично круду в parkingsDB.py

@@ -1,8 +1,8 @@
 import hashlib
 from enum import Enum
-import psycopg2
-from psycopg2 import sql
-
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from ..usersDB import Management, Rights, Roles, Users
 
 # authorize status
 class AuthStatus(Enum):
@@ -12,18 +12,18 @@ class AuthStatus(Enum):
     Admin = 4
 
 def export(connection_string : str) -> list[str, str, str]:
-    conn = psycopg2.connect(dbname='users_roles_parking', user='postgres', 
-                        password='postgres', host='localhost')
-    cursor = conn.cursor()
-    stmt = sql.SQL('SELECT users.email, users.password, roles.role_name FROM users JOIN roles ON users.role = roles.id')
-    cursor.execute(stmt)
+    engineParkings = create_engine(connection_string, echo=True)
+    engineParkings.connect()
+
+    sessionParkings = sessionmaker(autoflush=False, bind=engineParkings)
     res = []
-    for row in cursor:
-        res.append(*row)
-    cursor.close()
+    with sessionParkings(autoflush=False, bind=engineParkings) as db:
+        strJoin = db.query(Users.email, Users.password, Roles.role_name).select_from(Users).join(Roles, Users.role==Roles.id)
+        for sj in strJoin:
+            res.append(sj.email, sj.password, sj.role_name)
     return res
 
-def authorize(d : dict, connection_string : str):
+def authorize(d : dict, connection_string : str) -> AuthStatus:
     given = d['email']
     data = export(connection_string)
     if not given in [i[0] for i in data]:
@@ -33,8 +33,7 @@ def authorize(d : dict, connection_string : str):
     hashed = hashlib.md5((d['password']+salt).encode())
     if hashed.hexdigest() != original[1]:
         return AuthStatus.IncorrectPassword
-    return AuthStatus.User
-
+    return AuthStatus.User if str(original[2]).lower() == 'user' else AuthStatus.Admin
 
 if __name__=='__main__':
     pass
