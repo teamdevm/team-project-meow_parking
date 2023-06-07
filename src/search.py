@@ -13,13 +13,13 @@ def export(connection_string : str) -> list[str, str, str, int]: # city, street,
 
     res = []
     with sessionParkings(autoflush=False, bind=engineParkings) as db:
-        strJoin = db.query(Cities.name, Streets.name, Regions.name, FreePlaces.amount_free_places
+        strJoin = db.query(Cities.name.label('city_name'), Streets.name.label('street_name'), Regions.name.label('region_name'), FreePlaces.amount_free_places
                             ).select_from(Parkings).join(Streets, Parkings.street == Streets.id
                             ).join(Cities, Streets.city == Cities.id
                             ).join(Regions, Cities.region == Regions.id
                             ).join(FreePlaces, Parkings.id == FreePlaces.id_parking).all()
         for s in strJoin:
-            res.append(s[0], s[1], s[2], s[3])
+            res.append(s.city_name, s.street_name, s.region_name, s.amount_free_places)
     
     return res
 
