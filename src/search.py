@@ -2,7 +2,7 @@ import psycopg2
 from psycopg2 import sql
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from ..parkingsDB import Cities, FreePlaces, Parkings, Regions, Streets
+from parkingsDB import Cities, FreePlaces, Parkings, Regions, Streets
 
 
 def export(connection_string : str) -> list[str, str, str, int]: # city, street, region, free places
@@ -19,7 +19,7 @@ def export(connection_string : str) -> list[str, str, str, int]: # city, street,
                             ).join(Regions, Cities.region == Regions.id
                             ).join(FreePlaces, Parkings.id == FreePlaces.id_parking).all()
         for s in strJoin:
-            res.append(s.city_name, s.street_name, s.region_name, s.amount_free_places)
+            res.append((s.city_name, s.street_name, s.region_name, s.amount_free_places))
     
     return res
 
@@ -30,7 +30,7 @@ def search_parking(d : dict, connection_string : str, result_limit : int) -> lis
     filtered = None
     while r-l>1:
         m = (l+r)//2
-        filtered = filter(lambda elem: elem[:m][1].lower() == query, lst)
+        filtered = list(filter(lambda elem: elem[1][:m].lower() == query[:m], lst))
         if len(filtered)>0:
             l=m
         else:

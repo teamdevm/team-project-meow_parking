@@ -2,7 +2,7 @@ import hashlib
 from enum import Enum
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from ..usersDB import Management, Rights, Roles, Users
+from usersDB import Management, Rights, Roles, Users
 
 # authorize status
 class AuthStatus(Enum):
