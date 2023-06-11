@@ -37,17 +37,31 @@ class Login extends Component{
     changeHandler=(e)=>{
       this.setState({[e.target.name]:e.target.value})
     }
-    submitHandler =e=>{
+     submitHandler =e=>{
       e.preventDefault()
       console.log(this.state)
-      
-      .post('https://jsonplaceholder.typicode.com/posts',this.state)
-          .then(response=>{
-              console.log(response)
-          })
-          .catch(error=>{
-              console.log(error)
-          })
+      //datta to POST send
+      let l_data = {
+        email: this.state.email, password : this.state.password
+      }
+
+      const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json ;charset=utf-8'},
+        body: JSON.stringify(l_data)
+        };
+        fetch(`https://localhost:3000/`, requestOptions)
+        .then(response => response.json())
+          .catch((err) => {
+            console.log(err.message);
+         });
+    //  .post('https://jsonplaceholder.typicode.com/posts',this.state)
+    //      .then(response=>{
+    //          console.log(response)
+    //      })
+    //      .catch(error=>{
+    //          console.log(error)
+    //      })
     }
     render()
     {
