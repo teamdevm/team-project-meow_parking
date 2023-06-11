@@ -36,9 +36,9 @@ class SignIn extends Component{
     changeHandler=(e)=>{
       this.setState({[e.target.name]:e.target.value})
     }
-    submitHandler =e=>{
+     submitHandler =(e)=>{
       e.preventDefault()
-      console.log(this.state)
+      //console.log(this.state)
 
       //axios.post('http://127.0.0.1:8000/reg',this.state)
       //    .then(response=>{
@@ -48,11 +48,28 @@ class SignIn extends Component{
       //        console.log(error)
      //     })
       //  
-          fetch('http://127.0.0.1:8000/reg', {
-            method: 'POST',
-            body: {"name": "1nam1", "email": "1emqil", "passw": "131231"}
-          })
-          .then(response => response.json)
+
+      //data to POST send
+      let u_data = {
+        name : this.state.name, email: this.state.email, password : this.state.password
+      }
+      
+        const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json ;charset=utf-8'},
+        body: JSON.stringify(u_data)
+        };
+        fetch(`https://localhost:3000/signup`, requestOptions)
+        .then(response => response.json())
+          .catch((err) => {
+            console.log(err.message);
+         });
+        //  fetch('http://127.0.0.1:8000/reg', {
+        //   method: 'POST',
+        //    body: {"name": "1nam1", "email": "1emqil", "passw": "131231"}
+        // })
+        //  .then(response => response.json)
+
     }
     render(){
       //состояние ввода
