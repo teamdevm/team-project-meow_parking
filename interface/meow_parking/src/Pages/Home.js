@@ -37,13 +37,27 @@ class Home extends Component{
   submitHandler =e=>{
     e.preventDefault()
     console.log(this.state)
-    axios.post('https://jsonplaceholder.typicode.com/posts',this.state)
-        .then(response=>{
-            console.log(response)
-        })
-        .catch(error=>{
-            console.log(error)
-        })
+    //data to POST send
+    let h_data = {
+      search: this.state.search
+    }
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json ;charset=utf-8','Accept': 'application/json',},
+      body: JSON.stringify(h_data)
+      };
+      fetch(`https://localhost:3000/home`, requestOptions)
+      .then(response => response.json())
+        .catch((err) => {
+          console.log(err.message);
+       });
+    //axios.post('https://jsonplaceholder.typicode.com/posts',this.state)
+    //    .then(response=>{
+    //        console.log(response)
+    //   })
+    //    .catch(error=>{
+    //        console.log(error)
+    //    })
   }
   render(){
     //состояние ввода
