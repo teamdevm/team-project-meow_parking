@@ -40,7 +40,8 @@ class Login extends Component{
     submitHandler =e=>{
       e.preventDefault()
       console.log(this.state)
-      axios.post('https://jsonplaceholder.typicode.com/posts',this.state)
+      
+      .post('https://jsonplaceholder.typicode.com/posts',this.state)
           .then(response=>{
               console.log(response)
           })
@@ -105,12 +106,12 @@ class Login extends Component{
             </form>
             <script>/* описание кнопки для регистрации*/</script>
             <p className="font-montesserat">
-                Ещё нету аккаунта?
+                Ещё нет аккаунта?
                 <b 
                     onClick={this.navigateToSignUp} 
                     className="font-montesserat hover: underline cursor-pointer"
                 >
-                    Зарегестрируйтесь
+                    Зарегистрируйтесь
                 </b>
             </p>
         </div>

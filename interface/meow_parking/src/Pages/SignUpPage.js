@@ -39,13 +39,20 @@ class SignIn extends Component{
     submitHandler =e=>{
       e.preventDefault()
       console.log(this.state)
-      axios.post('https://jsonplaceholder.typicode.com/posts',this.state)
-          .then(response=>{
-              console.log(response)
+
+      //axios.post('http://127.0.0.1:8000/reg',this.state)
+      //    .then(response=>{
+      //        console.log(response)
+       //   })
+      //    .catch(error=>{
+      //        console.log(error)
+     //     })
+      //  
+          fetch('http://127.0.0.1:8000/reg', {
+            method: 'POST',
+            body: {"name": "1nam1", "email": "1emqil", "passw": "131231"}
           })
-          .catch(error=>{
-              console.log(error)
-          })
+          .then(response => response.json)
     }
     render(){
       //состояние ввода
@@ -117,7 +124,9 @@ class SignIn extends Component{
                 
                 <script>/* описание кнопки Регистрации*/</script>
                 <div className="mt-6">
-                        <button onClick={this.submitHandler} className="w-full px-4 py-2 font-montesserat tracking-wide text-black transition-colors duration-200 transform bg-blue-100 rounded-md hover:bg-purple-600 focus:outline-none focus:bg-purple-600">
+                        <button 
+                            onClick={this.submitHandler} 
+                            className="w-full px-4 py-2 font-montesserat tracking-wide text-black transition-colors duration-200 transform bg-blue-100 rounded-md hover:bg-purple-600 focus:outline-none focus:bg-purple-600">
                             Регистрация
                         </button>
                     </div>
