@@ -62,5 +62,6 @@ def add_regi(name, email, passw):
     return{"name": name, "email":email, "passw":passw}
 
 
-if __name__ == "__main__":
-    uvicorn.run("app.api:app", host="0.0.0.0", port=8000, reload=True)
+#для запуска сервака в терминале нужно перейти в папку с этим файлом и написать
+# python -m uvicorn main:app --reload --host 127.0.0.1 --port 8000
+# побаловаться запросами можно на http://127.0.0.1:8000/docs
