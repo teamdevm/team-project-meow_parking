@@ -1,0 +1,22 @@
+version: "3.9"
+services:
+  backend_test:
+    build: .
+    container_name: backend_test
+    restart: on-failure
+    ports:
+      - 8000:8000
+    depends_on:
+      - postgres
+  postgres:
+    image: postgres:14.8-alpine3.18
+    container_name: postgres
+    restart: on-failure
+    environment:
+      POSTGRES_DB: "parking_information"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+    volumes: 
+      - ./init_sql/:/docker-entrypoint-initdb.d/
+    ports:
+      - "5432:5432"
