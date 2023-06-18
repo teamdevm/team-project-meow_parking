@@ -9,9 +9,12 @@ import PostForm from './Pages/PostForm';
 import Header from "./Components/Header";
 //import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 
+
+
+
 function App() {
   
-  return(
+  return(    
     //настройка маршпутизаторов
     <>
     <BrowserRouter>
@@ -24,6 +27,7 @@ function App() {
     </BrowserRouter>
   </>
   )
+  
 }
 
 export default App;

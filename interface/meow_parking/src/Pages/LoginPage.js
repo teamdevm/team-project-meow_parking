@@ -4,6 +4,8 @@ import Header from "../Components/Header";
 import axios from 'axios'
 import {withRouter} from '../Components/withRouter';
 
+
+
 class Login extends Component{
 
 
@@ -38,6 +40,8 @@ class Login extends Component{
       this.setState({[e.target.name]:e.target.value})
     }
      submitHandler =e=>{
+      
+
       e.preventDefault()
       console.log(this.state)
       //datta to POST send
@@ -45,16 +49,41 @@ class Login extends Component{
         email: this.state.email, password : this.state.password
       }
 
+      //axios
       const requestOptions = {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json ;charset=utf-8'},
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json'},
         body: JSON.stringify(l_data)
-        };
-        fetch(`https://localhost:3000/`, requestOptions)
-        .then(response => response.json())
-          .catch((err) => {
-            console.log(err.message);
-         });
+      };
+
+      axios.post('http://127.0.0.1:8000/log', requestOptions)
+      .then(response => response.json())
+      .then(data=>{console.log(data)})
+      .catch((err) => {
+        console.error(err.message);})
+      ;
+
+
+        
+      //fetch
+
+      //const requestOptions = {
+      //  method: 'POST',
+      //  mode: 'no-cors',
+      //  headers: { 'Content-Type': 'application/json',
+      //"Access-Control-Allow-Headers" : "Content-Type, Authorization",
+      //"Access-Control-Allow-Origin": "http://127.0.0.1:8000",
+      //"Access-Control-Allow-Methods": "OPTIONS,POST,GET,PATCH"
+      //},
+      //  body: JSON.stringify(l_data)
+      //};
+      //fetch('http://127.0.0.1:8000/log', requestOptions)
+      //  .then(response => response.json())
+      //  .then(data=>{console.log(data)})
+      //    .catch((err) => {
+      //      console.error(err.message);
+      //   });
     //  .post('https://jsonplaceholder.typicode.com/posts',this.state)
     //      .then(response=>{
     //          console.log(response)
@@ -65,6 +94,7 @@ class Login extends Component{
     }
     render()
     {
+
       //состояние ввода
       const{email,password}=this.state
       return(
