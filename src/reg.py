@@ -9,7 +9,7 @@ class RegStatus(Enum):
     NewUser=1
     ExistMail=2
 
-def exportUsers(connection_string : str) -> list[str, str, str]:
+def exportUsers(connection_string : str) -> list[str, int]:
     engineParkings = create_engine(connection_string, echo=True)
     engineParkings.connect()
 
@@ -33,7 +33,7 @@ def Registration(d : dict, connection_string : str) -> RegStatus:
 
     engine=create_engine(connection_string,echo=True)
     Session = sessionmaker(bind=engine)
-    Session.add(Users(surname=' ',name=d['name'],fathername=' ',email=given,ph_number=' ',role='user',password=hashedPas))
+    Session.add(Users(surname=' ',name=d['name'],fathername=' ',email=given,ph_number=' ',role=1,password=hashedPas))
     Session.commit()
     Session.close()
     return RegStatus.NewUser

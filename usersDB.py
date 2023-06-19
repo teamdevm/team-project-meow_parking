@@ -4,9 +4,9 @@ from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.orm import Session
 from sqlalchemy import  Column, Integer, String, VARCHAR
 
-# usersString = "postgres://postgres:postgres@localhost:5432/users_roles_parking"
+# usersString = "postgres://postgres:postgres@localhost:5432/parking_information"
 
-# engineUsers = create_engine('postgresql+psycopg2://postgres:postgres@localhost:5432/users_roles_parking', echo=True)
+# engineUsers = create_engine('postgresql+psycopg2://postgres:postgres@localhost:5432/parking_information', echo=True)
 # engineUsers.connect()
 
 # sessionUsers = sessionmaker(autoflush=False, bind=engineUsers)

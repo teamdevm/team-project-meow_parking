@@ -3,6 +3,7 @@ from psycopg2 import sql
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from parkingsDB import Cities, FreePlaces, Parkings, Regions, Streets
+from users_parkings import UsersParkings
 
 
 def export(connection_string : str) -> list[str, str, str, int]: # city, street, region, free places
@@ -17,7 +18,7 @@ def export(connection_string : str) -> list[str, str, str, int]: # city, street,
                             ).select_from(Parkings).join(Streets, Parkings.street == Streets.id
                             ).join(Cities, Streets.city == Cities.id
                             ).join(Regions, Cities.region == Regions.id
-                            ).join(FreePlaces, Parkings.id == FreePlaces.id_parking).all()
+                            ).join(FreePlaces, Parkings.id_p == FreePlaces.id_parking).all()
         for s in strJoin:
             res.append((s.city_name, s.street_name, s.region_name, s.amount_free_places))
     
@@ -38,6 +39,26 @@ def search_parking(d : dict, connection_string : str, result_limit : int) -> lis
     if l==0:
         return []
     return filtered if len(filtered)<=result_limit else filtered[:result_limit] 
+
+
+##region,city,street
+def CheckUserParkingPlaces(d:dict,connection_string:str)->list[str,str,str]:
+    engineParkings = create_engine(connection_string, echo=True)
+    engineParkings.connect()
+
+    sessionParkings = sessionmaker(autoflush=False, bind=engineParkings)
+
+    res = []
+    with sessionParkings(autoflush=False, bind=engineParkings) as db:
+        strJoin=db.query(Cities.name.label('city_name'), Streets.name.label('street_name'), Regions.name.label('region_name')
+                        ).select_from(UsersParkings).join(Parkings,UsersParkings.id_parking==Parkings.id_p
+                        ).join(Parkings.street==Streets.city
+                        ).join(Cities, Streets.city == Cities.id
+                        ).join(Regions, Cities.region == Regions.id
+                        ).filter(UsersParkings.id_user==d["user_id"])
+        for s in strJoin:
+            res.append((s.city_name, s.street_name, s.region_name))
+    return res
 
 
 if __name__=='__main__':

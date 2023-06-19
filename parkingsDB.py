@@ -4,10 +4,10 @@ from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.orm import Session
 from sqlalchemy import  Column, Integer, String, VARCHAR
 
-# parkingsString = "postgres://postgres:postgres@localhost:5432/postgres"
+#parkingsString = "postgres://postgres:postgres@localhost:5432/parking_information"
 
-# engineParkings = create_engine('postgresql+psycopg2://postgres:postgres@localhost:5432/postgres', echo=True)
-# engineParkings.connect()
+#engineParkings = create_engine('postgresql+psycopg2://postgres:postgres@localhost:5432/parking_information', echo=True)
+#engineParkings.connect()
 
 # sessionParkings = sessionmaker(autoflush=False, bind=engineParkings)
 
@@ -25,7 +25,7 @@ class FreePlaces(Base):
     amount_free_places = Column(Integer)
 class Parkings(Base):
     __tablename__ = "parkings"
-    id = Column(Integer, primary_key=True, index=True)
+    id_p = Column(Integer, primary_key=True, index=True)
     city = Column(Integer)
     street = Column(Integer)
     latitude = Column(VARCHAR)
@@ -53,7 +53,7 @@ class Streets(Base):
 #     cities = db.query(Cities).all()
 #     freePlaces = db.query(FreePlaces).all()
 #     parkings = db.query(Parkings).all()
-#     region = db.query(Regions).all()
+##     region = db.query(Regions).all()
 #     streets = db.query(Streets).all()
 
 #     for c in cities:
