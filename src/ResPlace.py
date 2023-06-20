@@ -24,3 +24,15 @@ def PlaceReservation(d: dict, connection_string:str)->ResStatus:
         db.commit()
         db.close()
     return ResStatus.SuccessRes
+
+def FreeinUpParkingPlace(d: dict, connection_string:str)->bool:
+    engine=create_engine(connection_string,echo=True)
+    Session = sessionmaker(autoflush=False,bind=engine)
+    with Session(autoflush=False,bind=engine) as db:
+        ParkingInfo=db.query(UsersParkings).filter(UsersParkings.id_user==d['user_id'] & UsersParkings.id_parking==d['parking_id'])
+        db.delete(ParkingInfo)
+        db.query(FreePlaces).filter(FreePlaces.id==d['parking_id']
+                    ).update({"amount_free_places": FreePlaces.amount_free_places + 1})
+        db.commit()
+        db.close()
+    return True
