@@ -4,8 +4,6 @@ import Header from "../Components/Header";
 import axios from 'axios'
 import {withRouter} from '../Components/withRouter';
 
-
-
 class Login extends Component{
 
 
@@ -19,9 +17,48 @@ class Login extends Component{
       this.state={
         email: '',
         password: '',
+        emailerr:'',
+        passerr:''
       }
     }
-  
+    //проверяет корректность полей
+    validate(){
+      let email=this.state.email;
+      let password=this.state.password;
+      let emailerr='';
+      let passerr='';
+      let isValid = true;
+
+      if(!email){
+          isValid=false;
+          emailerr="Нужно ввести почту"
+      }
+
+      if (typeof email !== "undefined"){
+        var pattern = new RegExp(/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i);
+        if(!pattern.test(email)){
+          isValid=false;
+          emailerr="Введите почту правильно"
+        }
+      }
+
+      if(!password){
+        isValid=false;
+        passerr="Нужно ввести пароль"
+      }
+      if (typeof password !== "undefined"){
+        if(password.length<4){
+          isValid=false;
+          passerr="Нужно ввести более 4 символов"
+        }
+      }
+      this.setState({
+        passerr:passerr,
+        emailerr:emailerr
+      })
+      return isValid;
+    }
+
     navigateToHome()
     {
         this.props.navigate('/home')
@@ -34,63 +71,76 @@ class Login extends Component{
     {
         this.props.navigate('/signup')
     }
-  
-  
+
+    //чтобы были введены поля
+   
+
+
+    //при изменении в полях
     changeHandler=(e)=>{
+      let emailerr='';
+      let passerr='';
       this.setState({[e.target.name]:e.target.value})
-    }
-     submitHandler =e=>{
-      
-
-      e.preventDefault()
-      console.log(this.state)
-      //datta to POST send
-      let l_data = {
-        email: this.state.email, password : this.state.password
+      if(e.target.name=="password"){
+        this.setState({passerr:passerr})
+      }else if(e.target.name=="email"){
+        this.setState({emailerr:emailerr})
       }
+      
+    }
 
-      //axios
-      const requestOptions = {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json'},
-        body: JSON.stringify(l_data)
-      };
+    //при нажатии на кнопку
+    submitHandler =async e=>{     
+      e.preventDefault()
+      
+      //проверяет на пустоту полей
+      if(this.validate())
+      {
+        console.log(this.state)
+        //datta to POST send
+        let l_data = {
+          email: this.state.email, password : this.state.password
+        }
+        const requestOptions = {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json','accept': 'application/json'},
+          body: JSON.stringify(l_data)
+        };
 
-      axios.post('http://127.0.0.1:8000/log', requestOptions)
-      .then(response => response.json())
-      .then(data=>{console.log(data)})
-      .catch((err) => {
-        console.error(err.message);})
-      ;
-
-
-        
-      //fetch
-
-      //const requestOptions = {
-      //  method: 'POST',
-      //  mode: 'no-cors',
-      //  headers: { 'Content-Type': 'application/json',
-      //"Access-Control-Allow-Headers" : "Content-Type, Authorization",
-      //"Access-Control-Allow-Origin": "http://127.0.0.1:8000",
-      //"Access-Control-Allow-Methods": "OPTIONS,POST,GET,PATCH"
-      //},
-      //  body: JSON.stringify(l_data)
-      //};
-      //fetch('http://127.0.0.1:8000/log', requestOptions)
-      //  .then(response => response.json())
-      //  .then(data=>{console.log(data)})
-      //    .catch((err) => {
-      //      console.error(err.message);
-      //   });
-    //  .post('https://jsonplaceholder.typicode.com/posts',this.state)
-    //      .then(response=>{
-    //          console.log(response)
-    //      })
-    //      .catch(error=>{
-    //          console.log(error)
-    //      })
+        //fetch async
+        try{
+          const response =await fetch('http://127.0.0.1:8000/api/login', requestOptions)
+          if(response.ok){
+            console.log("sucsessful");
+            let reschecked=response;
+            let info = await reschecked.json();
+            
+            //проверка на правильность ввода данных
+            if(info.hasOwnProperty("False")){
+              console.log(info)
+              console.log("False")
+              
+              let passerr="Неверный пароль или почта";
+              let emailerr="Неверный пароль или почта";
+              let password=''
+              this.setState({
+                passerr:passerr,
+                emailerr:emailerr,
+                password:password
+              })
+            }
+            else if(info.hasOwnProperty("Yes")){
+              console.log(info)
+              console.log("Yes")
+              this.navigateToHome();
+            }
+          }
+          else {console.log("unsecsessful")}
+        }
+        catch(err){
+          console.error(err.message);
+        }
+      }
     }
     render()
     {
@@ -117,12 +167,13 @@ class Login extends Component{
                 <script>/*значение value для передачи введеных значений пароля и почты в useState*/</script>
                 <script>/*setFormInput формула для чтения данных с формы*/</script>
                 <input  
-                    onChange={this.changeHandler}              
+                    onChange={this.changeHandler}            
                     value={email}
                     type="text"
                     name="email"
                     className="block w-full px-4 py-2 mt-2 text-purple-700 bg-white border rounded-md focus:border-purple-400 focus:ring-purple-300 focus:outline-none focus:ring focus:ring-opacity-40"
                 />
+                <div className='font-montesserat text-red-400'> {this.state.emailerr}</div>
               </div>
               <script>/* описание пароля*/</script>
               <div className="mb-2">
@@ -139,6 +190,7 @@ class Login extends Component{
                     name="password"
                     className="block w-full px-4 py-2 mt-2 text-purple-700 bg-white border rounded-md focus:border-purple-400 focus:ring-purple-300 focus:outline-none focus:ring focus:ring-opacity-40"
                 />
+                <div className='font-montesserat text-red-400'> {this.state.passerr}</div>
               </div>
               
               <script>/* описание кнопки авторизации*/</script>
