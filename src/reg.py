@@ -18,26 +18,27 @@ def exportUsers(connection_string : str) -> list[str, int]:
     with sessionParkings(autoflush=False, bind=engineParkings) as db:
         strJoin = db.query(Users.email, Users.password, Roles.role_name).select_from(Users).join(Roles, Users.role==Roles.id)
         for sj in strJoin:
-            res.append(sj.email,sj.role)
+            res.append((sj.email, sj.role_name))
     return res
 
-def Registration(d : dict, connection_string : str) -> RegStatus:
+def Registration(d, connection_string):
     given = d['email']
-    AllUsers = exportUsers(connection_string)
-    if given in [i[0] for i in AllUsers]:
+    data = exportUsers(connection_string)
+    if given in [i[0] for i in data]:
         return RegStatus.ExistMail
     
-    original = filter(lambda elem: elem[0]==given, AllUsers)[0]
-    salt = original[0]
-    hashedPas = hashlib.md5((d['password']+salt).encode())
 
-    engine=create_engine(connection_string,echo=True)
+    hashed=hashlib.md5((d['password']+given).encode()).hexdigest()
+
+    engine = create_engine(connection_string, echo=True)
     Session = sessionmaker(bind=engine)
-    Session.add(Users(surname=' ',name=d['name'],fathername=' ',email=given,ph_number=' ',role=1,password=hashedPas))
-    Session.commit()
-    Session.close()
+    session = Session()
+    session.add(
+        Users(surname=' ', name=d['name'], fathername=' ', email=given, ph_number=' ', role=1, password=hashed)
+    )
+    session.commit()
+    session.close()
     return RegStatus.NewUser
 
 if __name__=='__main__':
     pass
-    

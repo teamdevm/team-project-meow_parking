@@ -14,7 +14,6 @@ def PlaceReservation(d: dict, connection_string:str)->ResStatus:
     Session = sessionmaker(autoflush=False,bind=engine)
     with Session(autoflush=False,bind=engine) as db:
         db.add(UsersParkings(id_user=d['user_id'],id_parking=d['parking_id']))
-        #countAvPlaces=db.query(FreePlaces.amount_free_places).filter(FreePlaces.id==d['parking_id'])
         countAvPlaces=db.query(FreePlaces.amount_free_places).select_from(FreePlaces
                                 ).filter(FreePlaces.id==d['parking_id'])
         if (countAvPlaces.scalar()==0):
@@ -25,14 +24,20 @@ def PlaceReservation(d: dict, connection_string:str)->ResStatus:
         db.close()
     return ResStatus.SuccessRes
 
-def FreeinUpParkingPlace(d: dict, connection_string:str)->bool:
-    engine=create_engine(connection_string,echo=True)
-    Session = sessionmaker(autoflush=False,bind=engine)
-    with Session(autoflush=False,bind=engine) as db:
-        ParkingInfo=db.query(UsersParkings).filter(UsersParkings.id_user==d['user_id'] & UsersParkings.id_parking==d['parking_id'])
-        db.delete(ParkingInfo)
-        db.query(FreePlaces).filter(FreePlaces.id==d['parking_id']
-                    ).update({"amount_free_places": FreePlaces.amount_free_places + 1})
-        db.commit()
-        db.close()
+def FreeingUpParkingPlace(d: dict, connection_string: str) -> bool:
+    engine = create_engine(connection_string, echo=True)
+    Session = sessionmaker(autoflush=False, bind=engine)
+    with Session(autoflush=False, bind=engine) as db:
+        ParkingInfo = db.query(UsersParkings).filter(
+            UsersParkings.id_user == d['user_id'],
+            UsersParkings.id_parking == d['parking_id']
+        ).first()
+        if ParkingInfo:
+            db.delete(ParkingInfo)
+            db.query(FreePlaces).filter(FreePlaces.id == d['parking_id']).update(
+                {"amount_free_places": FreePlaces.amount_free_places + 1}
+            )
+            db.commit()
+        else:
+            return False
     return True

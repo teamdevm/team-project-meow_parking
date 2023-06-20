@@ -4,13 +4,6 @@ from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.orm import Session
 from sqlalchemy import  Column, Integer, String, VARCHAR
 
-# usersString = "postgres://postgres:postgres@localhost:5432/parking_information"
-
-# engineUsers = create_engine('postgresql+psycopg2://postgres:postgres@localhost:5432/parking_information', echo=True)
-# engineUsers.connect()
-
-# sessionUsers = sessionmaker(autoflush=False, bind=engineUsers)
-
 # создаем модель, объекты которой будут храниться в бд
 class Base(DeclarativeBase): pass
 class Management(Base):
@@ -36,10 +29,5 @@ class Users(Base):
     fathername = Column(VARCHAR)
     email = Column(VARCHAR)
     ph_number = Column(VARCHAR)
-    role = (Integer)
+    role = Column(Integer)
     password = Column(VARCHAR)
-
-# создаем сессию подключения к бд
-# with sessionUsers(autoflush=False, bind=engineUsers) as db:
-#     pass
-    ###CRUD аналогично круду в parkingsDB.py
