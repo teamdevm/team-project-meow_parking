@@ -2,6 +2,7 @@ import React,{Component} from 'react'
 import Header from "../Components/Header";
 import axios from 'axios'
 import {withRouter} from '../Components/withRouter';
+import Modal from '../Modal/Modal';
 
 class Home extends Component{
 
@@ -15,11 +16,16 @@ class Home extends Component{
     this.state={
         search:'',
         is_firsttime:true,
-        Records:[]
-      
-    }
+        opend:'',
+        Records:[],
+        show:false//отвечает за видимость окна с информацией о парковке
+     }
   }
-
+  toggleModal = () => {
+    this.setState({
+      show: !this.state.show
+    });
+  }
 
   validate(){
     let search=this.state.search;
@@ -43,12 +49,19 @@ class Home extends Component{
   {
       this.props.navigate('/signup')
   }
-
-
+  //открывает модальное окно с информацией о парковке
+  openModalInfoRes = ()=>{
+    this.setState({show:true})
+  }
+  //закрывает модальное окно с информацией о парковке
+  onCloseModalInfoRes = ()=>{
+    this.setState({show:false})
+  }
+  //изменяет значения 
   changeHandler=(e)=>{
     this.setState({[e.target.name]:e.target.value})
   }
-
+  //get запрос от сервера
   async componentDidMount(){
     if(this.state.is_firsttime){
         fetch('http://127.0.0.1:8000/api/home')
@@ -60,30 +73,6 @@ class Home extends Component{
       })
     }
   }
-
-  //loadHandler =async e=>{
-  //  
-  //  if(this.state.is_firsttime){
-  //    try{
-  //     const response =await fetch('http://127.0.0.1:8000/api/home')
-  //      if(response.ok){
-  //        console.log("sucsessful");
-  //        let reschecked=response;
-  //        let info = await reschecked.json();
-  //        console.log(info);
-  //        this.setState({
-  //          Records:info.data,
-  //          is_firsttime:false
-  //        })
-//
-  //      }
-  //      else {console.log("unsecsessful")}
-  //    }
-  //    catch(err){
-  //      console.error(err.message);
-  //    }
-  //  }
- // }
 
 
   submitHandler =async e=>{
@@ -138,9 +127,10 @@ class Home extends Component{
   }
   render(){
     //состояние ввода
-    const{search,Records}=this.state;
+    const{search,Records,show}=this.state;
     
     return(
+      <div>
       <div className=" bg-green-200 relative font-montesserat flex flex-col min-h-screen overflow-hidden">
       <div>
         <div class="relative">
@@ -177,21 +167,33 @@ class Home extends Component{
               return(
                 <div className="w-full border-black p-2 m-auto bg-grey rounded-md ring ring-2 ring-transparent lg:max-w-6xl">
                 <button 
-                  onClick={this.navigateToHome}
+                  onClick={this.toggleModal}
                   type='button'
                   class="text-xl ring-1 ring-grey-200 border-black text-black font-montesserat w-full py-1 px-2 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-white-400 hover:bg-indigo-400 hover:text-black focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm sm:p-12 dark:focus:ring-offset-gray-800"
                   key={record.id}>
                   <strong>{record.street} | </strong><br />
                   {record.city}<br /><br />
                   </button>
+                  <Modal show={this.state.show}
+                    onClose={this.toggleModal}>
+                    
+                    <div class="p-2 relative">
+                      
+                    <button onClick={this.toggleModal} type="button" class=" ring-black-200 focus:outline-none text-black font-montesserat bg-green-200 hover:bg-green-400 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Зарезервировать</button>
+                    <button onClick={this.toggleModal} type="button" class=" ring-black-200 focus:outline-none text-black font-montesserat bg-red-200 hover:bg-red-400 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Освободить</button>
+                    </div>
+                  </Modal>
                   </div>
               )
             })
+            
           }
         
         </div>
+        
 
       </div>
+    </div>
     </div>
     )
   }
