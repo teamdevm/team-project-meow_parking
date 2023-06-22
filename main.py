@@ -98,6 +98,7 @@ class Parking_place(BaseModel):
     name: str="None"
     location: str="None"
     size: str="None"
+
 #массив в котрый передаются данные о пользователях которые хотят зарегестрироваться
 people_to_signup=[Signup_User(name="aaa",email="aboba@mail.ru",password="sussus")]
 #массив с данными о парковках
@@ -109,6 +110,7 @@ def is_user(email):
         if a.email==email:
             return True
     return False
+
 #функция для проверки правильности входа (пароль)
 def is_user_r(email,password):
     for a in people_to_signup:
@@ -117,6 +119,7 @@ def is_user_r(email,password):
                 return True
             return False
     return False
+
 #функция для поиска парковок
 def is_parkplace(search):
     for a in parkings:
@@ -129,6 +132,8 @@ def is_parkplace(search):
 async def login_person(*,data:Signup_User):
     #тут я проверяю типо по email нету ли такго пользователя
     if is_user(data.email)==False:
+        # сюда функцию добавление в базу данных данных нового пользователя
+        ##---####
         person = Signup_User(name=data.name,email=data.email,password=data.password)
         people_to_signup.append(person)
         return{
@@ -169,6 +174,31 @@ async def search_parking(*,data:Search):
         return{
             "status":"0",
         }
+     
+parkings=[
+    {
+        'id':'1',
+        'city':'Perm',
+        'street':'Plehanova 5',
+        'latitude':'22727272727',
+        'longitude':'88858585',
+        'links_to_maps':'some_link1'
+    },
+    {
+        
+        'id':'2',
+        'city':'Afganistan',
+        'street':'Alach Ak Bar 13',
+        'latitude':'22adds727272727',
+        'longitude':'88dasdasd858585',
+        'links_to_maps':'some_link2'
+    }
+]
+#форма выгрузки всех парковок
+@app.get("/api/home")
+async def send_parkings():
+    return parkings
+
 
 if __name__ == "__main__":
     uvicorn.run("app.api:app", host="0.0.0.0", port=8000, reload=True)
