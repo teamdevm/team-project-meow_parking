@@ -1,6 +1,32 @@
 //в js файл, пытался отправить запрос
 import React from 'react'
- 
+[{
+  'id':'1',
+  'city':'Perm',
+  'street':'Plehanova 5',
+  'latitude':'22727272727',
+  'longitude':'88858585',
+  'links_to_maps':'some_link1'
+},
+{
+  
+  'id':'2',
+  'city':'Afganistan',
+  'street':'Alach Ak Bar 13',
+  'latitude':'22adds727272727',
+  'longitude':'88dasdasd858585',
+  'links_to_maps':'some_link2'
+},
+{
+  
+  'id':'3',
+  'city':'Kazahstan',
+  'street':'Anananas',
+  'latitude':'22adds72727dsd2727',
+  'longitude':'88dasdasd858585',
+  'links_to_maps':'some_lisdnk2'
+}
+]
 class MyForm extends React.Component {
   constructor(props) {
     super(props);
