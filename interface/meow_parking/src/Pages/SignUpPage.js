@@ -37,7 +37,7 @@ class SignIn extends Component{
         }
 
         if(typeof name !== "undefined"){
-            isValid=false;
+            
             const re = /^\S*$/;
             if(name.length < 6 || !re.test(name)){
                 isValid = false;
@@ -108,7 +108,8 @@ class SignIn extends Component{
     //при нажатии на кнопку
     submitHandler =async e=>{     
         e.preventDefault()
-        
+        console.log(this.validate())
+
         //проверяет на пустоту полей
         if(this.validate())
         {

@@ -14,20 +14,184 @@ class Home extends Component{
     this.navigateToSignUp=this.navigateToSignUp.bind(this);
     //
     this.state={
+        id: 0,
         search:'',
         is_firsttime:true,
         opend:'',
         Records:[],
-        show:{}//отвечает за видимость окна с информацией о парковке
+        show:{},//отвечает за видимость окна с информацией о парковке
+        net_mest:{},//можно ли еще зарезервировать
+        net_rezerva:{},//есть ли у пользователя зарезервированные места
+        //netmesterr:'',
+        //netrezerverr:''
      }
   }
-  /////////////////////
-  toggleModal = () => {
+  //Выход из аккаунта
+  ////////////////////
+  navigateToLoginQ=async e=>{
+    e.preventDefault()
     this.setState({
-      show: !this.state.show
+      id: ''
     });
+    let l_data = {
+      mes:"quit"
+    }
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json','accept': 'application/json'},
+      body: JSON.stringify(l_data)
+    };
+    try{
+      const response =await fetch('http://127.0.0.1:8000/api/homeq', requestOptions)
+      if(response.ok){
+        console.log("sucsessful");
+        let reschecked=response;
+        let info = await reschecked.json();
+        console.log(info)
+        if(info.hasOwnProperty("OK")){
+          console.log(info.OK)
+          this.navigateToLogin()
+        }
+        else if(info.hasOwnProperty("NONONO")){
+          console.log(info.NONONO)
+        }
+      }
+      else {console.log("unsecsessful")}
+    }
+    catch(err){
+      console.error(err.message);
+    }
+  
+  }
+  ////////////////////
+  //Резервация парковочного места 
+  resButton=async (value)=>{
+    let l_data = {
+      user_id:this.state.id,park_id:value + 1 
+    }
+    console.log(l_data)
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json','accept': 'application/json'},
+      body: JSON.stringify(l_data)
+    };
+  
+    try{
+      const response =await fetch('http://127.0.0.1:8000/api/homer', requestOptions)
+      if(response.ok){
+        console.log("sucsessful");
+        let reschecked=response;
+        let info = await reschecked.json();
+        console.log(info)
+        this.reservst(value)
+        this.mestst(value)
+
+        if(info.hasOwnProperty("prks")){
+          console.log(info.prks)
+          this.setState({Records: info.prks})
+        }
+        else{
+          console.log("NOT RESERVED")
+          this.mestsf(value)
+        }
+      }
+      else {console.log("unsecsessful")}
+      console.log(this.state)
+    }
+    catch(err){
+      console.error(err.message);
+    }
   }
 
+//на парковке нет мест
+mestsf=(value)=>{
+  if(this.state.net_mest[value]=='')
+        {
+          console.log(value)
+          let key_to_update=this.state.net_mest;
+          key_to_update[value]='Вы не можете зарезервировать место';
+          this.setState({
+            net_mest:key_to_update
+          })
+        }
+        else{
+          console.log("IMsssIN")
+         this.reservst(value)
+       }
+}
+//на парковке есть место
+mestst = (value)=>{
+  let key_to_update=this.state.net_mest;
+  key_to_update[value]='';
+  this.setState({
+    net_mest:key_to_update
+  })
+}
+  /////////////////////
+//Освобождение парковочного места
+unresButton=async (value)=>{
+  let l_data = {
+    user_id:this.state.id,park_id:value + 1 
+  }
+  console.log(l_data)
+  const requestOptions = {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json','accept': 'application/json'},
+    body: JSON.stringify(l_data)
+  };
+
+  try{
+    const response =await fetch('http://127.0.0.1:8000/api/homeu', requestOptions)
+    if(response.ok){
+      console.log("sucsessful");
+      let reschecked=response;
+      let info = await reschecked.json();
+      console.log(info)
+      this.reservst(value)
+      this.mestst(value)
+
+      if(info.hasOwnProperty("prks")){
+        console.log(info.prks)
+        this.setState({Records: info.prks})
+      }
+      else {
+        console.log("UNRESERVED")
+        this.reservsf(value)
+      }
+    }
+    else {console.log("unsecsessful")}
+    console.log(this.state)
+
+  }
+  catch(err){
+    console.error(err.message);
+  }
+}
+//у пользователя нету права отклонить резервы
+reservsf=(value)=>{
+  if(this.state.net_rezerva[value]=='')
+        {
+          console.log(value)
+          let key_to_update=this.state.net_rezerva;
+          key_to_update[value]='У вас нет зарезервированных мест';
+          this.setState({
+            net_rezerva:key_to_update
+          })
+        }
+        else{
+          console.log("IMsssIN")
+         this.reservst(value)
+       }
+}
+//у пользователя имеется право отклонить резервы
+reservst = (value)=>{
+  let key_to_update=this.state.net_rezerva;
+  key_to_update[value]='';
+  this.setState({
+    net_rezerva:key_to_update
+  })
+}
+//////
   validate(){
     let search=this.state.search;
     let isValid = true;
@@ -50,14 +214,22 @@ class Home extends Component{
   {
       this.props.navigate('/signup')
   }
+  //
+    
   //открывает модальное окно с информацией о парковке
   openModal = (value)=>{
     if(!this.state.show[value])
     {
+      let key2={};
+      let key1={};
       let key_to_update={};
       key_to_update[value]=true;
+      key2[value]='';
+      key1[value]='';
       this.setState({
-        show:Object.assign({},this.state.show,key_to_update)
+        show:Object.assign({},this.state.show,key_to_update),
+        net_rezerva:Object.assign({},this.state.net_rezerva,key2),
+        net_mest:Object.assign({},this.state.net_mest,key_to_update)
       })
     }
     else{
@@ -66,28 +238,35 @@ class Home extends Component{
   }
   //закрывает модальное окно с информацией о парковке
   onCloseModal = (value)=>{
+    let key2={};
+    let key1={};
     let key_to_update={};
     key_to_update[value]=false;
+    key2[value]='';
+    key1[value]='';
     this.setState({
-      show:Object.assign({},this.state.show,key_to_update)
+      show:Object.assign({},this.state.show,key_to_update),
+      net_rezerva:Object.assign({},this.state.net_rezerva,key2),
+      net_mest:Object.assign({},this.state.net_mest,key_to_update)
     })
   }
   //изменяет значения 
   changeHandler=(e)=>{
     this.setState({[e.target.name]:e.target.value})
   }
-  //get запрос от сервера
-  async componentDidMount(){
-    if(this.state.is_firsttime){
-        fetch('http://127.0.0.1:8000/api/home')
-        .then(result=>result.json().then((jsonResult)=>{
-          this.setState({Records: jsonResult,is_firsttime:false})
-          console.log("Recieved Details")
-      })).catch((err)=>{
-        console.error(err.message)
-      })
-    }
+ //get запрос от сервера
+ async componentDidMount(){
+  if(this.state.is_firsttime){
+      fetch('http://127.0.0.1:8000/api/home')
+      .then(result=>result.json().then((jsonResult)=>{
+        this.setState({Records: jsonResult.prks,id:jsonResult.user,is_firsttime:false})
+        console.log("Recieved Details")
+        console.log(jsonResult)
+    })).catch((err)=>{
+      console.error(err.message)
+    })
   }
+}
 
 
   submitHandler =async e=>{
@@ -107,30 +286,23 @@ class Home extends Component{
 
         //fetch async
         try{
-          const response =await fetch('http://127.0.0.1:8000/api/home', requestOptions)
+          const response =await fetch('http://127.0.0.1:8000/api/homes', requestOptions)
           if(response.ok){
             console.log("sucsessful");
             let reschecked=response;
             let info = await reschecked.json();
-            
+            console.log(info)
             //проверка на правильность ввода данных
-            if(info.hasOwnProperty("False")){
-              console.log(info)
-              console.log("False")
-              
-              let passerr="Неверный пароль или почта";
-              let emailerr="Неверный пароль или почта";
-              let password=''
-              this.setState({
-                passerr:passerr,
-                emailerr:emailerr,
-                password:password
-              })
-            }
-            else if(info.hasOwnProperty("Yes")){
+            if(info.hasOwnProperty("Data")){
               console.log(info)
               console.log("Yes")
-              this.navigateToHome();
+              this.setState({Records: info.Data})
+            }
+            else{
+              let nf=[{
+                "Not Found":"Not Found"
+              }]
+              this.setState({Records: nf})
             }
           }
           else {console.log("unsecsessful")}
@@ -151,7 +323,7 @@ class Home extends Component{
         <div class="relative">
           <p><Header /></p>
           <button 
-                      onClick={this.navigateToLogin}
+                      onClick={this.navigateToLoginQ}
                       type="submit" class="gap-4 text-black  rounded-br-2xl absolute right-0.5 bottom-0.5 bg-transparent hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Выход</button>
                 
         </div>
@@ -179,6 +351,7 @@ class Home extends Component{
         <div className="w-11/12 p-2 m-auto bg-white rounded-md ring ring-2 ring-transparent lg:max-w-6xl">
           {
             Records && Records.map((record,key) =>{
+              if(record.hasOwnProperty("id")){
               return(
                 <div key={key} className="w-full border-black p-2 m-auto bg-grey rounded-md ring ring-2 ring-transparent lg:max-w-6xl">
                 
@@ -194,13 +367,37 @@ class Home extends Component{
                     onClose={()=>this.onCloseModal(record.id)}>
                     
                     <div class="p-2 relative">
-                      
-                    <button onClick={()=>this.onCloseModal(record.id)} type="button" class=" ring-black-200 focus:outline-none text-black font-montesserat bg-green-200 hover:bg-green-400 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Зарезервировать</button>
-                    <button onClick={()=>this.onCloseModal(record.id)} type="button" class=" ring-black-200 focus:outline-none text-black font-montesserat bg-red-200 hover:bg-red-400 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Освободить</button>
+                    <div>
+                      Город: {record.city}<br />
+                      Улица: {record.street}<br />
+                      Регион: {record.region}<br />
+                      Количество свободных мест: {record.places}<br />
+                      Ссылка на карту: {record.link}<br />
+                    </div>
+                    <div class="font-bold text-gray-700 rounded-full bg-white flex items-center justify-center font-montesserat">
+                      Зарезервировано вами мест: {record.user_res}
+                    </div>
+                    <div className='font-montesserat text-red-400 rounded-full flex items-center justify-center'> {this.state.net_mest[record.id]}</div>
+                    <div className='font-montesserat text-red-400 rounded-full flex items-center justify-center'> {this.state.net_rezerva[record.id]}</div>
+                    <button onClick={()=>this.resButton(record.id)} type="button" class=" ring-black-200 focus:outline-none text-black font-montesserat bg-green-200 hover:bg-green-400 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Зарезервировать</button>
+                    <button onClick={()=>this.unresButton(record.id)} type="button" class=" ring-black-200 focus:outline-none text-black font-montesserat bg-red-200 hover:bg-red-400 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">Освободить</button>
                     </div>
                   </Modal>
                   </div>
               )
+               }
+               else{
+                 return(
+                  <div key={key} className="w-full border-black p-2 m-auto bg-grey rounded-md ring ring-2 ring-transparent lg:max-w-6xl">
+                    <div class="text-xl ring-1 ring-grey-200 border-black text-black font-montesserat w-full py-1 px-2 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-white-400" >
+                    <br/> <br/> <br/><br/><br/><br/> 
+                      <strong>Not Found</strong>
+                      <br/> <br/> <br/><br/><br/><br/> 
+
+                    </div>
+                  </div>
+                 )
+               }
             })
             
           }

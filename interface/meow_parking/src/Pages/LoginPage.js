@@ -101,6 +101,7 @@ class Login extends Component{
         let l_data = {
           email: this.state.email, password : this.state.password
         }
+        console.log('aboba')
         const requestOptions = {
           method: 'POST',
           headers: { 'Content-Type': 'application/json','accept': 'application/json'},
@@ -116,7 +117,7 @@ class Login extends Component{
             let info = await reschecked.json();
             
             //проверка на правильность ввода данных
-            if(info.hasOwnProperty("False")){
+            if(info.hasOwnProperty("WRONG PASS") ||info.hasOwnProperty("NOT FOUND") ){
               console.log(info)
               console.log("False")
               
@@ -129,7 +130,7 @@ class Login extends Component{
                 password:password
               })
             }
-            else if(info.hasOwnProperty("Yes")){
+            else if(info.hasOwnProperty("SUCCESS")){
               console.log(info)
               console.log("Yes")
               this.navigateToHome();
