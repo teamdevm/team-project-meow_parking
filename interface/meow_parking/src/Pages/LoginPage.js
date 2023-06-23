@@ -101,6 +101,7 @@ class Login extends Component{
         let l_data = {
           email: this.state.email, password : this.state.password
         }
+        console.log('aboba')
         const requestOptions = {
           method: 'POST',
           headers: { 'Content-Type': 'application/json','accept': 'application/json'},

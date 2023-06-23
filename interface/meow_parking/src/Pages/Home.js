@@ -14,6 +14,7 @@ class Home extends Component{
     this.navigateToSignUp=this.navigateToSignUp.bind(this);
     //
     this.state={
+        id: 0,
         search:'',
         is_firsttime:true,
         opend:'',
@@ -21,7 +22,110 @@ class Home extends Component{
         show:{}//отвечает за видимость окна с информацией о парковке
      }
   }
+  //Выход из аккаунта
+  ////////////////////
+  navigateToLoginQ=async e=>{
+    e.preventDefault()
+    this.setState({
+      id: ''
+    });
+    let l_data = {
+      mes:"quit"
+    }
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json','accept': 'application/json'},
+      body: JSON.stringify(l_data)
+    };
+    try{
+      const response =await fetch('http://127.0.0.1:8000/api/homeq', requestOptions)
+      if(response.ok){
+        console.log("sucsessful");
+        let reschecked=response;
+        let info = await reschecked.json();
+        console.log(info)
+        if(info.hasOwnProperty("OK")){
+          console.log(info.OK)
+          this.navigateToLogin()
+        }
+        else if(info.hasOwnProperty("NONONO")){
+          console.log(info.NONONO)
+        }
+      }
+      else {console.log("unsecsessful")}
+    }
+    catch(err){
+      console.error(err.message);
+    }
+  
+  }
+  ////////////////////
+  //Резервация парковочного места 
+  resButton=async (value)=>{
+    let l_data = {
+      user_id:this.state.id,park_id:value + 1 
+    }
+    console.log(l_data)
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json','accept': 'application/json'},
+      body: JSON.stringify(l_data)
+    };
+  
+    try{
+      const response =await fetch('http://127.0.0.1:8000/api/homer', requestOptions)
+      if(response.ok){
+        console.log("sucsessful");
+        let reschecked=response;
+        let info = await reschecked.json();
+        console.log(info)
+        if(info.hasOwnProperty("prks")){
+          console.log(info.prks)
+        }
+        else if(info.hasOwnProperty("F")){
+          console.log(info.F)
+        }
+      }
+      else {console.log("unsecsessful")}
+    }
+    catch(err){
+      console.error(err.message);
+    }
+  }
   /////////////////////
+//Освобождение парковочного места
+unresButton=async (value)=>{
+  let l_data = {
+    user_id:this.state.id,park_id:value + 1 
+  }
+  console.log(l_data)
+  const requestOptions = {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json','accept': 'application/json'},
+    body: JSON.stringify(l_data)
+  };
+
+  try{
+    const response =await fetch('http://127.0.0.1:8000/api/homeu', requestOptions)
+    if(response.ok){
+      console.log("sucsessful");
+      let reschecked=response;
+      let info = await reschecked.json();
+      console.log(info)
+      if(info.hasOwnProperty("prks")){
+        console.log(info.prks)
+      }
+      else if(info.hasOwnProperty("F")){
+        console.log(info.F)
+      }
+    }
+    else {console.log("unsecsessful")}
+  }
+  catch(err){
+    console.error(err.message);
+  }
+}
+//////
   toggleModal = () => {
     this.setState({
       show: !this.state.show
@@ -76,20 +180,19 @@ class Home extends Component{
   changeHandler=(e)=>{
     this.setState({[e.target.name]:e.target.value})
   }
-  //get запрос от сервера
-  async componentDidMount(){
-    if(this.state.is_firsttime){
-        fetch('http://127.0.0.1:8000/api/home')
-        .then(result=>result.json().then((jsonResult)=>{
-          this.setState({Records: jsonResult,is_firsttime:false})
-          console.log("Recieved Details")
-          console.log(jsonResult)
-      })).catch((err)=>{
-        console.error(err.message)
-        console.log("KDFMVKDMV")
-      })
-    }
+ //get запрос от сервера
+ async componentDidMount(){
+  if(this.state.is_firsttime){
+      fetch('http://127.0.0.1:8000/api/home')
+      .then(result=>result.json().then((jsonResult)=>{
+        this.setState({Records: jsonResult.prks,id:jsonResult.user,is_firsttime:false})
+        console.log("Recieved Details")
+        console.log(this.state)
+    })).catch((err)=>{
+      console.error(err.message)
+    })
   }
+}
 
 
   submitHandler =async e=>{
@@ -153,7 +256,7 @@ class Home extends Component{
         <div class="relative">
           <p><Header /></p>
           <button 
-                      onClick={this.navigateToLogin}
+                      onClick={this.navigateToLoginQ}
                       type="submit" class="gap-4 text-black  rounded-br-2xl absolute right-0.5 bottom-0.5 bg-transparent hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Выход</button>
                 
         </div>
@@ -197,8 +300,8 @@ class Home extends Component{
                     
                     <div class="p-2 relative">
                       
-                    <button onClick={()=>this.onCloseModal(record.id)} type="button" class=" ring-black-200 focus:outline-none text-black font-montesserat bg-green-200 hover:bg-green-400 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Зарезервировать</button>
-                    <button onClick={()=>this.onCloseModal(record.id)} type="button" class=" ring-black-200 focus:outline-none text-black font-montesserat bg-red-200 hover:bg-red-400 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Освободить</button>
+                    <button onClick={()=>this.resButton(record.id)} type="button" class=" ring-black-200 focus:outline-none text-black font-montesserat bg-green-200 hover:bg-green-400 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Зарезервировать</button>
+                    <button onClick={()=>this.unresButton(record.id)} type="button" class=" ring-black-200 focus:outline-none text-black font-montesserat bg-red-200 hover:bg-red-400 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">Освободить</button>
                     </div>
                   </Modal>
                   </div>
