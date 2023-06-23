@@ -37,7 +37,6 @@ class SignIn extends Component{
         }
 
         if(typeof name !== "undefined"){
-            isValid=false;
             const re = /^\S*$/;
             if(name.length < 6 || !re.test(name)){
                 isValid = false;
@@ -132,7 +131,7 @@ class SignIn extends Component{
               let info = await reschecked.json();
               
               //проверка на правильность ввода данных
-              if(info.hasOwnProperty("FAILURE")){
+              if(info.hasOwnProperty("FAIL")){
                 console.log(info)
                 console.log("False")
                 

@@ -83,8 +83,10 @@ class Home extends Component{
         .then(result=>result.json().then((jsonResult)=>{
           this.setState({Records: jsonResult,is_firsttime:false})
           console.log("Recieved Details")
+          console.log(jsonResult)
       })).catch((err)=>{
         console.error(err.message)
+        console.log("KDFMVKDMV")
       })
     }
   }
