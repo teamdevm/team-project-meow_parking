@@ -18,9 +18,10 @@ class Home extends Component{
         is_firsttime:true,
         opend:'',
         Records:[],
-        show:false//отвечает за видимость окна с информацией о парковке
+        show:{}//отвечает за видимость окна с информацией о парковке
      }
   }
+  /////////////////////
   toggleModal = () => {
     this.setState({
       show: !this.state.show
@@ -50,12 +51,26 @@ class Home extends Component{
       this.props.navigate('/signup')
   }
   //открывает модальное окно с информацией о парковке
-  openModalInfoRes = ()=>{
-    this.setState({show:true})
+  openModal = (value)=>{
+    if(!this.state.show[value])
+    {
+      let key_to_update={};
+      key_to_update[value]=true;
+      this.setState({
+        show:Object.assign({},this.state.show,key_to_update)
+      })
+    }
+    else{
+      this.onCloseModal(value)
+    }
   }
   //закрывает модальное окно с информацией о парковке
-  onCloseModalInfoRes = ()=>{
-    this.setState({show:false})
+  onCloseModal = (value)=>{
+    let key_to_update={};
+    key_to_update[value]=false;
+    this.setState({
+      show:Object.assign({},this.state.show,key_to_update)
+    })
   }
   //изменяет значения 
   changeHandler=(e)=>{
@@ -127,7 +142,7 @@ class Home extends Component{
   }
   render(){
     //состояние ввода
-    const{search,Records,show}=this.state;
+    const{search,Records}=this.state;
     
     return(
       <div>
@@ -163,24 +178,25 @@ class Home extends Component{
         </div>
         <div className="w-11/12 p-2 m-auto bg-white rounded-md ring ring-2 ring-transparent lg:max-w-6xl">
           {
-            Records && Records.map(record =>{
+            Records && Records.map((record,key) =>{
               return(
-                <div className="w-full border-black p-2 m-auto bg-grey rounded-md ring ring-2 ring-transparent lg:max-w-6xl">
+                <div key={key} className="w-full border-black p-2 m-auto bg-grey rounded-md ring ring-2 ring-transparent lg:max-w-6xl">
+                
                 <button 
-                  onClick={this.toggleModal}
+                  onClick={()=>this.openModal(record.id)}
                   type='button'
                   class="text-xl ring-1 ring-grey-200 border-black text-black font-montesserat w-full py-1 px-2 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-white-400 hover:bg-indigo-400 hover:text-black focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm sm:p-12 dark:focus:ring-offset-gray-800"
                   key={record.id}>
                   <strong>{record.street} | </strong><br />
                   {record.city}<br /><br />
                   </button>
-                  <Modal show={this.state.show}
-                    onClose={this.toggleModal}>
+                  <Modal show={this.state.show[record.id]}
+                    onClose={()=>this.onCloseModal(record.id)}>
                     
                     <div class="p-2 relative">
                       
-                    <button onClick={this.toggleModal} type="button" class=" ring-black-200 focus:outline-none text-black font-montesserat bg-green-200 hover:bg-green-400 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Зарезервировать</button>
-                    <button onClick={this.toggleModal} type="button" class=" ring-black-200 focus:outline-none text-black font-montesserat bg-red-200 hover:bg-red-400 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Освободить</button>
+                    <button onClick={()=>this.onCloseModal(record.id)} type="button" class=" ring-black-200 focus:outline-none text-black font-montesserat bg-green-200 hover:bg-green-400 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Зарезервировать</button>
+                    <button onClick={()=>this.onCloseModal(record.id)} type="button" class=" ring-black-200 focus:outline-none text-black font-montesserat bg-red-200 hover:bg-red-400 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Освободить</button>
                     </div>
                   </Modal>
                   </div>
