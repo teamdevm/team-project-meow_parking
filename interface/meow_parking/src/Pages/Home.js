@@ -212,30 +212,20 @@ unresButton=async (value)=>{
 
         //fetch async
         try{
-          const response =await fetch('http://127.0.0.1:8000/api/home', requestOptions)
+          const response =await fetch('http://127.0.0.1:8000/api/homes', requestOptions)
           if(response.ok){
             console.log("sucsessful");
             let reschecked=response;
             let info = await reschecked.json();
-            
+            console.log(info)
             //проверка на правильность ввода данных
-            if(info.hasOwnProperty("False")){
+            if(info.hasOwnProperty("FAIL")){
               console.log(info)
               console.log("False")
-              
-              let passerr="Неверный пароль или почта";
-              let emailerr="Неверный пароль или почта";
-              let password=''
-              this.setState({
-                passerr:passerr,
-                emailerr:emailerr,
-                password:password
-              })
             }
-            else if(info.hasOwnProperty("Yes")){
+            else if(info.hasOwnProperty("Data")){
               console.log(info)
               console.log("Yes")
-              this.navigateToHome();
             }
           }
           else {console.log("unsecsessful")}
