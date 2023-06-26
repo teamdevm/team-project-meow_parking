@@ -10,4 +10,4 @@
 
 Для запуска сервера необходимо:
 1) Перейти в папку с проектом и с помощью команды pip install установить три библиотеки (sqlalchemy, uvicorn, fastapi)
-2) Для запуска червера прописать в консоль команду: python -m uvicorn main:app --reload --host 127.0.0.1 --port 8000
+2) Для запуска сервера прописать в консоль команду: python -m uvicorn main:app --reload --host 127.0.0.1 --port 8000
