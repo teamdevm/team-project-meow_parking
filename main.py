@@ -16,14 +16,15 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from starlette.middleware import Middleware
 from starlette.middleware.cors import CORSMiddleware
-from src.reg import exportUsers,Registration,RegStatus
-from src.auth import authorize,AuthStatus
-from src.ResPlace import PlaceReservation,ResStatus,FreeingUpParkingPlace
-from src.search import CheckUserParkingPlaces, export, search_parking
+from .src.reg import exportUsers,Registration,RegStatus
+from .src.auth import authorize,AuthStatus
+from .src.ResPlace import PlaceReservation,ResStatus,FreeingUpParkingPlace
+from .src.search import CheckUserParkingPlaces, export, search_parking
+from core.config import settings
 
-#usersString = 'postgresql+psycopg2://postgres:postgres@localhost:5432/parking_information'
+usersString = 'postgresql+psycopg2://postgres:postgres@localhost:5432/parking_information'
 #для юры х 
-usersString = 'postgresql+psycopg2://postgres:200210@localhost:5432/parking_information'
+#usersString = 'postgresql+psycopg2://postgres:200210@localhost:5432/parking_information'
 
 engineUsers = create_engine(usersString, echo=True)
 connection_string = engineUsers.connect()
