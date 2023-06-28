@@ -3,6 +3,10 @@ import { BrowserRouter,Route,Routes } from 'react-router-dom';
 import Login from './Pages/LoginPage'
 import SignUp from './Pages/SignUpPage'
 import Home from './Pages/Home';
+//import PostForm from './Pages/PostForm';
+//import MyForm from './Pages/MyForm';
+// <Route path='/MyForm' element={<MyForm />} />
+import Header from "./Components/Header";
 //import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 
 
