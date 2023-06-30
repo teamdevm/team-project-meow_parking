@@ -18,18 +18,6 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
---
--- TOC entry 3415 (class 1262 OID 16398)
--- Name: parking_information; Type: DATABASE; Schema: -; Owner: postgres
---
-
-CREATE DATABASE parking_information WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE_PROVIDER = libc LOCALE = 'Russian_Russia.1251';
-
-
-ALTER DATABASE parking_information OWNER TO postgres;
-
-\connect parking_information
-
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;

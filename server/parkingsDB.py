@@ -4,13 +4,6 @@ from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.orm import Session
 from sqlalchemy import  Column, Integer, String, VARCHAR
 
-#parkingsString = "postgres://postgres:postgres@localhost:5432/parking_information"
-
-#engineParkings = create_engine('postgresql+psycopg2://postgres:postgres@localhost:5432/parking_information', echo=True)
-#engineParkings.connect()
-
-# sessionParkings = sessionmaker(autoflush=False, bind=engineParkings)
-
 # создаем модель, объекты которой будут храниться в бд
 class Base(DeclarativeBase): pass
 class Cities(Base):
