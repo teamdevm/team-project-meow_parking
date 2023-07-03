@@ -21,9 +21,9 @@ from src.auth import authorize,AuthStatus
 from src.ResPlace import PlaceReservation,ResStatus,FreeingUpParkingPlace
 from src.search import CheckUserParkingPlaces, export, search_parking
 
-usersString = 'postgresql+psycopg2://postgres:postgres@localhost:5432/parking_information'
+usersString = 'postgresql+psycopg2://postgres:postgres@db:5432/postgres'
 #для юры х 
-# usersString = 'postgresql+psycopg2://postgres:200210@localhost:5432/parking_information'
+#usersString = 'postgresql+psycopg2://postgres:200210@localhost:5432/parking_information'
 
 engineUsers = create_engine(usersString, echo=True)
 connection_string = engineUsers.connect()

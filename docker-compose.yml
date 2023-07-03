@@ -1,0 +1,47 @@
+version: '3'
+services:
+  db:
+    build: db/
+    image: postgres
+    restart: always
+    container_name: dbproj
+    ports: 
+      - "5431:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  server:
+    build: server/
+    image: serverfa
+    restart: always
+    container_name: serverproj
+    ports:
+      - "8000:8000"
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: postgres
+    depends_on:
+      - db
+    volumes:
+      - ./:/src
+
+  client:
+    build: client/
+    image: clientfa
+    restart: always
+    container_name: clientproj
+    ports:
+      -  3000:3000
+    depends_on:
+      - server
+    volumes:
+      - ./:/src
+      - /src/node_modules
+
+volumes:
+  postgres-data:
+  db:
+    driver: local
